@@ -1,2 +1,2 @@
-# Projeto de SO
- Projeto da matéria Sistemas Operacionais para simular o algoritmo de tarefa mais curta preemptiva
+# Projeto de S.O.
+ Projeto da matéria Sistemas Operacionais do professor Júlio para simular o algoritmo de tarefa mais curta preemptiva
