@@ -6,6 +6,6 @@
   - Ian Rodrigo
   - Igor Caian
   - Makian Freitas
-  - Pablo
-  - Reginaldo
+  - Pablo Fernandes
+  - Reginaldo Cruz
   - Vítor Aniz
