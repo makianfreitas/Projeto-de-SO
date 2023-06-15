@@ -27,7 +27,7 @@ void imprimeProcessosCriados(processo *vetProc); //Imprime o ID, o tamanho e o t
 void timeCPU(processo *vetProc, int *fila); //Passa o tempo
 void filaProcessos(processo *vetProcessos, int *fila); //Organiza a fila
 void escalonador(processo *vetProcessos, int *fila); //Verifica qual é o processo com o menor tamanho
-void cpu(int execultando, processo *vetProcessos, int *fila);
+void cpu(int execultando, processo *vetProcessos, int *fila); //Execulta o processo
 
 int tempo; //Tempo atual
 int i; //Variável para os laços
@@ -65,12 +65,12 @@ int main(){
 
 void criaProcessos(processo *vetProcessos) { //Cria os processos (armazena os valores no vetor principal (vetProcessos[]))
 	srand(time(NULL));
-    for (i = 0; i < totProcesso; i++) {
+	for (i = 0; i < totProcesso; i++) {
 		vetProcessos[i].tamJobs = 4 + rand() % 16; //Tamanho do processo é gerado aleatoriamente (de 4 a 20)
 		vetProcessos[i].tempoChegadaNaFila = rand() % 15; //Tempo de chegada é gerado aleatoriamente (de 0 a 15)
 		vetProcessos[i].idProcesso = 65 + i; //idProcesso recebe o código de cada letra baseado na tabela ASCII (exemplo: 65 = A e 90 = Z)
 		vetProcessos[i].faltaProcessar = vetProcessos[i].tamJobs; //faltaProcessar recebe inicialmente o tamanho do processo (tamJobs)
-    }
+	}
 }
 
 
@@ -122,7 +122,7 @@ void escalonador(processo *vetProcessos, int *fila) { //Verifica qual é o proce
 	cpu(menorProcesso, vetProcessos, fila);
 }
 
-void cpu(int execultando, processo *vetProcessos, int *fila) { //Execulta
+void cpu(int execultando, processo *vetProcessos, int *fila) { //Execulta o processo
 	int j; //Variável para o laço
 	printf("\t---------------------------------------------------\n");
 	printf("\t|  %d\t|           %c\t\t|        %d\t  |\n", tempo, vetProcessos[execultando].idProcesso, vetProcessos[execultando].faltaProcessar - 1); //Imprime o tempo, o ID e a quantidade que resta do processo em execulção
