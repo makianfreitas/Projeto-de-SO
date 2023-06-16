@@ -28,9 +28,12 @@ void timeCPU(processo *vetProc, int *fila); //Passa o tempo
 void filaProcessos(processo *vetProcessos, int *fila); //Organiza a fila
 void escalonador(processo *vetProcessos, int *fila); //Verifica qual é o processo com o menor tamanho
 void cpu(int execultando, processo *vetProcessos, int *fila); //Execulta o processo
+void relatorio(); //Informações extras
 
-int tempo; //Tempo atual
 int i; //Variável para os laços
+float tempoTotal; //Tempo total/atual
+float tempoUtil=0; //Contador que representa o tempo que a CPU foi utilizada
+float tempoInutil=0; //Contador que representa o tempo que a CPU não foi utilizada
 int totProcesso; //Quantidade total de processos e tamanho lógico do vetor principal vetProcessos[]
 /*
 	totProcesso é a posição limite do vetor principal (vetProcessos[]), 
@@ -58,60 +61,62 @@ int main(){
 	imprimeProcessosCriados(vetProcessos);
 	system("pause");
 	timeCPU(vetProcessos, fila);
-	printf("\t---------------------------------------------------\n\n");
+	relatorio();
+	printf("\n\tFim do programa\n\n");
 	system("pause");
 	return 0;
 }
 
-void criaProcessos(processo *vetProcessos) { //Cria os processos (armazena os valores no vetor principal (vetProcessos[]))
+void criaProcessos(processo *vetProcessos){ //Cria os processos (armazena os valores no vetor principal (vetProcessos[]))
 	srand(time(NULL));
-	for (i = 0; i < totProcesso; i++) {
-		vetProcessos[i].tamJobs = 4 + rand() % 16; //Tamanho do processo é gerado aleatoriamente (de 4 a 20)
+	for (i=0; i < totProcesso; i++) {
+		vetProcessos[i].tamJobs = 3 + rand() % 12; //Tamanho do processo é gerado aleatoriamente (de 3 a 15)
 		vetProcessos[i].tempoChegadaNaFila = rand() % 15; //Tempo de chegada é gerado aleatoriamente (de 0 a 15)
 		vetProcessos[i].idProcesso = 65 + i; //idProcesso recebe o código de cada letra baseado na tabela ASCII (exemplo: 65 = A e 90 = Z)
 		vetProcessos[i].faltaProcessar = vetProcessos[i].tamJobs; //faltaProcessar recebe inicialmente o tamanho do processo (tamJobs)
 	}
 }
 
-
-void imprimeProcessosCriados(processo *vetProcessos) { //Imprime o ID, o tamanho e o tempo de chegada de cada processo
-	int i;
+void imprimeProcessosCriados(processo *vetProcessos){ //Imprime o ID, o tamanho e o tempo de chegada de cada processo
 	system("cls");
 	system("cls");
 	printf("\t---------------------------------------------------\n");
 	printf("\t| ID Processo | Tamanho do Job | Tempo de Chegada |\n");
-	for(i = 0; i < totProcesso; i++){
+	for(i=0; i < totProcesso; i++){
 		printf("\t---------------------------------------------------\n");
 		printf("\t|    %c \t      |    %d \t       |    %d \t\t  |\n", vetProcessos[i].idProcesso, vetProcessos[i].tamJobs, vetProcessos[i].tempoChegadaNaFila);
 	}
 	printf("\t---------------------------------------------------\n\n");
 }
 
-void timeCPU(processo *vetProcessos, int *fila) { //Passa o tempo
+void timeCPU(processo *vetProcessos, int *fila){ //Passa o tempo
 	imprimeProcessosCriados(vetProcessos);
 	printf("\n\t---------------------------------------------------\n");
 	printf("\t| Tempo\t| Processo em Execulcao\t| Falta Processar |\n");
-	for(tempo=0; totProcesso > 0; tempo++){ //Laço que representa o tempo
+	for(tempoTotal=0; totProcesso > 0; tempoTotal++){ //Laço que representa o tempo
 		filaProcessos(vetProcessos, fila); //Organiza a fila
 		if(tamFila > -1){ //Verifica se existe processo para ser execultado
 			escalonador(vetProcessos, fila); //Verifica qual é o processo com o menor tamanho
+			tempoUtil++;
 		} else { //Não tem processo no momento
 			printf("\t---------------------------------------------------\n");
-			printf("\t|  %d\t|           -\t\t|        -\t  |\n", tempo); //Imprime a linha da tabela sem processo
+			printf("\t|  %.0f\t|           -\t\t|        -\t  |\n", tempoTotal); //Imprime a linha da tabela sem processo
+			tempoInutil++;
 		}
 	}
+	printf("\t---------------------------------------------------\n\n");
 }
 
-void filaProcessos(processo *vetProcessos, int *fila) { //Organiza a fila
+void filaProcessos(processo *vetProcessos, int *fila){ //Organiza a fila
 	for(i=0; i < totProcesso; i++){ //Laço que verifica se chegou processo no tempo atual
-		if(vetProcessos[i].tempoChegadaNaFila == tempo){
-			tamFila++; //"Aumenta" o tamanho da fila
+		if(vetProcessos[i].tempoChegadaNaFila == tempoTotal){
+			tamFila++; //Aumenta o tamanho lógico da fila
 			fila[tamFila] = i; //fila[] recebe a posição, no vetor principal (vetProcessos[]), do processo que chegou
 		}
 	}
 }
 
-void escalonador(processo *vetProcessos, int *fila) { //Verifica qual é o processo com o menor tamanho
+void escalonador(processo *vetProcessos, int *fila){ //Verifica qual é o processo com o menor tamanho
 	int menorProcesso; //Armazena a posição, no vetor principal (vetProcessos[]), do processo com o menor tamanho, ou seja, o processo que será execultado
 	menorProcesso = fila[0];
 	for(i=1; i <= tamFila; i++){ //Laço que verifica qual é o processo com o menor tamanho
@@ -122,10 +127,10 @@ void escalonador(processo *vetProcessos, int *fila) { //Verifica qual é o proce
 	cpu(menorProcesso, vetProcessos, fila);
 }
 
-void cpu(int execultando, processo *vetProcessos, int *fila) { //Execulta o processo
+void cpu(int execultando, processo *vetProcessos, int *fila){ //Execulta o processo
 	int j; //Variável para o laço
 	printf("\t---------------------------------------------------\n");
-	printf("\t|  %d\t|           %c\t\t|        %d\t  |\n", tempo, vetProcessos[execultando].idProcesso, vetProcessos[execultando].faltaProcessar - 1); //Imprime o tempo, o ID e a quantidade que resta do processo em execulção
+	printf("\t|  %.0f\t|           %c\t\t|        %d\t  |\n", tempoTotal, vetProcessos[execultando].idProcesso, vetProcessos[execultando].faltaProcessar - 1); //Imprime o tempo, o ID e a quantidade que resta do processo em execulção
 	vetProcessos[execultando].faltaProcessar--;
 
 	if(vetProcessos[execultando].faltaProcessar == 0){ //Verifica se o processo que acabou de ser execultado terminou
@@ -141,7 +146,7 @@ void cpu(int execultando, processo *vetProcessos, int *fila) { //Execulta o proc
 		for(i=execultando; i < totProcesso-1; i++){ //Laço que "apaga" o processo do vetor principal (vetProcessos[])
 			vetProcessos[i] = vetProcessos[i+1];
 		}
-		totProcesso--;
+		totProcesso--; //Diminui o tamanho lógico do vetor principal (vetProcessos[])
 
 		for(i=0; i <= tamFila-1; i++){ 
 			/*
@@ -155,16 +160,15 @@ void cpu(int execultando, processo *vetProcessos, int *fila) { //Execulta o proc
 				fila[i]--;
 			}
 		}
-		tamFila--;
+		tamFila--; //Diminui o tamanho lógico do vetor fila[]
 	}
 }
 
-/* 
-    O QUE SE PODE TER COMO RELATÓRIO:
-   *ESTUDAR OS CONCEITOS PARA OBTER AS SEGUINTES MÉTRICAS:
-  	- Tempo de utilização de CPU;
-	- Índice de produtividade da CPU;
-	- Tempo médio de espera;
-	- Tempo médio de retorno;
-	- Etc.
-*/
+void relatorio(){ //Informações extras
+	printf("\n<<<<<<<<<<<<<<<<<<<<<<<<<<<< RELATORIO >>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n");
+	printf("\tConclusao no tempo total de: %.0f\n", tempoTotal);
+	printf("\tTempo de ultilizacao da CPU: %.0f\n", tempoUtil);
+	printf("\tTempo de inultilizacao da CPU: %.0f\n", tempoInutil);
+	printf("\tPercentual de utilizacao da CPU: %.2f %%\n", (tempoUtil / tempoTotal)*100);
+	printf("\tPercentual de inutilizacao da CPU: %.2f %%\n\n", (tempoInutil / tempoTotal)*100);
+}
