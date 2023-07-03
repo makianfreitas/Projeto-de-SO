@@ -6,8 +6,8 @@
         Ian Rodrigo
         Igor Caian
         Makian Freitas
-        Pablo
-        Reginaldo
+        Pablo Fernandes
+        Reginaldo Cruz
         Vítor Aniz
 */
 
@@ -37,7 +37,7 @@ float tempoInutil=0; //Contador que representa o tempo que a CPU não foi utiliz
 int totProcesso; //Quantidade total de processos e tamanho lógico do vetor principal vetProcessos[]
 /*
 	totProcesso é a posição limite do vetor principal (vetProcessos[]), 
-	ou seja, o vetor será lido até a posição tamFila. Se tiver alguma coisa 
+	ou seja, o vetor será lido até a posição totProcesso. Se tiver alguma coisa 
 	amazenada depois desta posição (no vetor vetProcessos[]), será 
 	ignorado pois se trata de processo(s) finalizado(s)
 */
