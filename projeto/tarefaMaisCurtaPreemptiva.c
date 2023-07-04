@@ -27,7 +27,7 @@ void imprimeProcessosCriados(processo *vetProc); //Imprime o ID, o tamanho e o t
 void timeCPU(processo *vetProc, int *fila); //Passa o tempo
 void filaProcessos(processo *vetProcessos, int *fila); //Organiza a fila
 void escalonador(processo *vetProcessos, int *fila); //Verifica qual é o processo com o menor tamanho
-void cpu(int execultando, processo *vetProcessos, int *fila); //Execulta o processo
+void cpu(int executando, processo *vetProcessos, int *fila); //Executa o processo
 void relatorio(); //Informações extras
 
 int i; //Variável para os laços
@@ -92,10 +92,10 @@ void imprimeProcessosCriados(processo *vetProcessos){ //Imprime o ID, o tamanho 
 void timeCPU(processo *vetProcessos, int *fila){ //Passa o tempo
 	imprimeProcessosCriados(vetProcessos);
 	printf("\n\t---------------------------------------------------\n");
-	printf("\t| Tempo\t| Processo em Execulcao\t| Falta Processar |\n");
+	printf("\t| Tempo\t| Processo em Execucao\t| Falta Processar |\n");
 	for(tempoTotal=0; totProcesso > 0; tempoTotal++){ //Laço que representa o tempo
 		filaProcessos(vetProcessos, fila); //Organiza a fila
-		if(tamFila > -1){ //Verifica se existe processo para ser execultado
+		if(tamFila > -1){ //Verifica se existe processo para ser executado
 			escalonador(vetProcessos, fila); //Verifica qual é o processo com o menor tamanho
 			tempoUtil++;
 		} else { //Não tem processo no momento
@@ -117,7 +117,7 @@ void filaProcessos(processo *vetProcessos, int *fila){ //Organiza a fila
 }
 
 void escalonador(processo *vetProcessos, int *fila){ //Verifica qual é o processo com o menor tamanho
-	int menorProcesso; //Armazena a posição, no vetor principal (vetProcessos[]), do processo com o menor tamanho, ou seja, o processo que será execultado
+	int menorProcesso; //Armazena a posição, no vetor principal (vetProcessos[]), do processo com o menor tamanho, ou seja, o processo que será executado
 	menorProcesso = fila[0];
 	for(i=1; i <= tamFila; i++){ //Laço que verifica qual é o processo com o menor tamanho
 		if(vetProcessos[fila[i]].faltaProcessar < vetProcessos[menorProcesso].faltaProcessar){
@@ -127,15 +127,15 @@ void escalonador(processo *vetProcessos, int *fila){ //Verifica qual é o proces
 	cpu(menorProcesso, vetProcessos, fila);
 }
 
-void cpu(int execultando, processo *vetProcessos, int *fila){ //Execulta o processo
+void cpu(int executando, processo *vetProcessos, int *fila){ //Executa o processo
 	int j; //Variável para o laço
 	printf("\t---------------------------------------------------\n");
-	printf("\t|  %.0f\t|           %c\t\t|        %d\t  |\n", tempoTotal, vetProcessos[execultando].idProcesso, vetProcessos[execultando].faltaProcessar - 1); //Imprime o tempo, o ID e a quantidade que resta do processo em execulção
-	vetProcessos[execultando].faltaProcessar--;
+	printf("\t|  %.0f\t|           %c\t\t|        %d\t  |\n", tempoTotal, vetProcessos[executando].idProcesso, vetProcessos[executando].faltaProcessar - 1); //Imprime o tempo, o ID e a quantidade que resta do processo em execução
+	vetProcessos[executando].faltaProcessar--;
 
-	if(vetProcessos[execultando].faltaProcessar == 0){ //Verifica se o processo que acabou de ser execultado terminou
+	if(vetProcessos[executando].faltaProcessar == 0){ //Verifica se o processo que acabou de ser executado terminou
 		for(i=0; i <= tamFila; i++){ //Laço que procura este processo no vetor fila[]
-			if(fila[i] == execultando){ //Verifica se esta posição é o processo que será "apagado" do vetor fila[]
+			if(fila[i] == executando){ //Verifica se esta posição é o processo que será "apagado" do vetor fila[]
 				for(j=i; j <= tamFila-1; j++){ //Laço que "apaga" o processo do vetor fila[]
 					fila[j] = fila[j+1];
 				}
@@ -143,7 +143,7 @@ void cpu(int execultando, processo *vetProcessos, int *fila){ //Execulta o proce
 			}
 		}
 
-		for(i=execultando; i < totProcesso-1; i++){ //Laço que "apaga" o processo do vetor principal (vetProcessos[])
+		for(i=executando; i < totProcesso-1; i++){ //Laço que "apaga" o processo do vetor principal (vetProcessos[])
 			vetProcessos[i] = vetProcessos[i+1];
 		}
 		totProcesso--; //Diminui o tamanho lógico do vetor principal (vetProcessos[])
@@ -156,7 +156,7 @@ void cpu(int execultando, processo *vetProcessos, int *fila){ //Execulta o proce
 				forem maiores do que a posição, no vetor principal (vetProcessos[]), 
 				do processo que foi "apagado"
 			*/
-			if(fila[i] > execultando){ //Verifica se a posição armazenada é maior que a posição do processo que foi "apagado"
+			if(fila[i] > executando){ //Verifica se a posição armazenada é maior que a posição do processo que foi "apagado"
 				fila[i]--;
 			}
 		}
